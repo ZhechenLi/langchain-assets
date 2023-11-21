@@ -1,0 +1,234 @@
+Human: You are a SQLite expert. Given an input question, first create a syntactically correct SQLite query to run, then look at the results of the query and return the answer to the input question.
+Unless the user specifies in the question a specific number of examples to obtain, query for at most 10 results using the LIMIT clause as per SQLite. You can order the results to return the most informative data in the database.
+Never query for all columns from a table. You must query only the columns that are needed to answer the question. Wrap each column name in double quotes (\") to denote them as delimited identifiers.
+Pay attention to use only the column names you can see in the tables below. Be careful to not query for columns that do not exist. Also, pay attention to which column is in which table.
+Pay attention to use date('now') function to get the current date, if the question involves \"today\".
+
+Use the following format:
+
+Question: Question here
+SQLQuery: SQL Query to run
+SQLResult: Result of the SQLQuery
+Answer: Final answer here
+
+Only use the following tables:
+
+CREATE TABLE \"Album\" (
+\t\"AlbumId\" INTEGER NOT NULL, 
+\t\"Title\" NVARCHAR(160) NOT NULL, 
+\t\"ArtistId\" INTEGER NOT NULL, 
+\tPRIMARY KEY (\"AlbumId\"), 
+\tFOREIGN KEY(\"ArtistId\") REFERENCES \"Artist\" (\"ArtistId\")
+)
+
+/*
+3 rows from Album table:
+AlbumId\tTitle\tArtistId
+1\tFor Those About To Rock We Salute You\t1
+2\tBalls to the Wall\t2
+3\tRestless and Wild\t2
+*/
+
+
+CREATE TABLE \"Artist\" (
+\t\"ArtistId\" INTEGER NOT NULL, 
+\t\"Name\" NVARCHAR(120), 
+\tPRIMARY KEY (\"ArtistId\")
+)
+
+/*
+3 rows from Artist table:
+ArtistId\tName
+1\tAC/DC
+2\tAccept
+3\tAerosmith
+*/
+
+
+CREATE TABLE \"Customer\" (
+\t\"CustomerId\" INTEGER NOT NULL, 
+\t\"FirstName\" NVARCHAR(40) NOT NULL, 
+\t\"LastName\" NVARCHAR(20) NOT NULL, 
+\t\"Company\" NVARCHAR(80), 
+\t\"Address\" NVARCHAR(70), 
+\t\"City\" NVARCHAR(40), 
+\t\"State\" NVARCHAR(40), 
+\t\"Country\" NVARCHAR(40), 
+\t\"PostalCode\" NVARCHAR(10), 
+\t\"Phone\" NVARCHAR(24), 
+\t\"Fax\" NVARCHAR(24), 
+\t\"Email\" NVARCHAR(60) NOT NULL, 
+\t\"SupportRepId\" INTEGER, 
+\tPRIMARY KEY (\"CustomerId\"), 
+\tFOREIGN KEY(\"SupportRepId\") REFERENCES \"Employee\" (\"EmployeeId\")
+)
+
+/*
+3 rows from Customer table:
+CustomerId\tFirstName\tLastName\tCompany\tAddress\tCity\tState\tCountry\tPostalCode\tPhone\tFax\tEmail\tSupportRepId
+1\tLuís\tGonçalves\tEmbraer - Empresa Brasileira de Aeronáutica S.A.\tAv. Brigadeiro Faria Lima, 2170\tSão José dos Campos\tSP\tBrazil\t12227-000\t+55 (12) 3923-5555\t+55 (12) 3923-5566\tluisg@embraer.com.br\t3
+2\tLeonie\tKöhler\tNone\tTheodor-Heuss-Straße 34\tStuttgart\tNone\tGermany\t70174\t+49 0711 2842222\tNone\tleonekohler@surfeu.de\t5
+3\tFrançois\tTremblay\tNone\t1498 rue Bélanger\tMontréal\tQC\tCanada\tH2G 1A7\t+1 (514) 721-4711\tNone\tftremblay@gmail.com\t3
+*/
+
+
+CREATE TABLE \"Employee\" (
+\t\"EmployeeId\" INTEGER NOT NULL, 
+\t\"LastName\" NVARCHAR(20) NOT NULL, 
+\t\"FirstName\" NVARCHAR(20) NOT NULL, 
+\t\"Title\" NVARCHAR(30), 
+\t\"ReportsTo\" INTEGER, 
+\t\"BirthDate\" DATETIME, 
+\t\"HireDate\" DATETIME, 
+\t\"Address\" NVARCHAR(70), 
+\t\"City\" NVARCHAR(40), 
+\t\"State\" NVARCHAR(40), 
+\t\"Country\" NVARCHAR(40), 
+\t\"PostalCode\" NVARCHAR(10), 
+\t\"Phone\" NVARCHAR(24), 
+\t\"Fax\" NVARCHAR(24), 
+\t\"Email\" NVARCHAR(60), 
+\tPRIMARY KEY (\"EmployeeId\"), 
+\tFOREIGN KEY(\"ReportsTo\") REFERENCES \"Employee\" (\"EmployeeId\")
+)
+
+/*
+3 rows from Employee table:
+EmployeeId\tLastName\tFirstName\tTitle\tReportsTo\tBirthDate\tHireDate\tAddress\tCity\tState\tCountry\tPostalCode\tPhone\tFax\tEmail
+1\tAdams\tAndrew\tGeneral Manager\tNone\t1962-02-18 00:00:00\t2002-08-14 00:00:00\t11120 Jasper Ave NW\tEdmonton\tAB\tCanada\tT5K 2N1\t+1 (780) 428-9482\t+1 (780) 428-3457\tandrew@chinookcorp.com
+2\tEdwards\tNancy\tSales Manager\t1\t1958-12-08 00:00:00\t2002-05-01 00:00:00\t825 8 Ave SW\tCalgary\tAB\tCanada\tT2P 2T3\t+1 (403) 262-3443\t+1 (403) 262-3322\tnancy@chinookcorp.com
+3\tPeacock\tJane\tSales Support Agent\t2\t1973-08-29 00:00:00\t2002-04-01 00:00:00\t1111 6 Ave SW\tCalgary\tAB\tCanada\tT2P 5M5\t+1 (403) 262-3443\t+1 (403) 262-6712\tjane@chinookcorp.com
+*/
+
+
+CREATE TABLE \"Genre\" (
+\t\"GenreId\" INTEGER NOT NULL, 
+\t\"Name\" NVARCHAR(120), 
+\tPRIMARY KEY (\"GenreId\")
+)
+
+/*
+3 rows from Genre table:
+GenreId\tName
+1\tRock
+2\tJazz
+3\tMetal
+*/
+
+
+CREATE TABLE \"Invoice\" (
+\t\"InvoiceId\" INTEGER NOT NULL, 
+\t\"CustomerId\" INTEGER NOT NULL, 
+\t\"InvoiceDate\" DATETIME NOT NULL, 
+\t\"BillingAddress\" NVARCHAR(70), 
+\t\"BillingCity\" NVARCHAR(40), 
+\t\"BillingState\" NVARCHAR(40), 
+\t\"BillingCountry\" NVARCHAR(40), 
+\t\"BillingPostalCode\" NVARCHAR(10), 
+\t\"Total\" NUMERIC(10, 2) NOT NULL, 
+\tPRIMARY KEY (\"InvoiceId\"), 
+\tFOREIGN KEY(\"CustomerId\") REFERENCES \"Customer\" (\"CustomerId\")
+)
+
+/*
+3 rows from Invoice table:
+InvoiceId\tCustomerId\tInvoiceDate\tBillingAddress\tBillingCity\tBillingState\tBillingCountry\tBillingPostalCode\tTotal
+1\t2\t2009-01-01 00:00:00\tTheodor-Heuss-Straße 34\tStuttgart\tNone\tGermany\t70174\t1.98
+2\t4\t2009-01-02 00:00:00\tUllevålsveien 14\tOslo\tNone\tNorway\t0171\t3.96
+3\t8\t2009-01-03 00:00:00\tGrétrystraat 63\tBrussels\tNone\tBelgium\t1000\t5.94
+*/
+
+
+CREATE TABLE \"InvoiceLine\" (
+\t\"InvoiceLineId\" INTEGER NOT NULL, 
+\t\"InvoiceId\" INTEGER NOT NULL, 
+\t\"TrackId\" INTEGER NOT NULL, 
+\t\"UnitPrice\" NUMERIC(10, 2) NOT NULL, 
+\t\"Quantity\" INTEGER NOT NULL, 
+\tPRIMARY KEY (\"InvoiceLineId\"), 
+\tFOREIGN KEY(\"TrackId\") REFERENCES \"Track\" (\"TrackId\"), 
+\tFOREIGN KEY(\"InvoiceId\") REFERENCES \"Invoice\" (\"InvoiceId\")
+)
+
+/*
+3 rows from InvoiceLine table:
+InvoiceLineId\tInvoiceId\tTrackId\tUnitPrice\tQuantity
+1\t1\t2\t0.99\t1
+2\t1\t4\t0.99\t1
+3\t2\t6\t0.99\t1
+*/
+
+
+CREATE TABLE \"MediaType\" (
+\t\"MediaTypeId\" INTEGER NOT NULL, 
+\t\"Name\" NVARCHAR(120), 
+\tPRIMARY KEY (\"MediaTypeId\")
+)
+
+/*
+3 rows from MediaType table:
+MediaTypeId\tName
+1\tMPEG audio file
+2\tProtected AAC audio file
+3\tProtected MPEG-4 video file
+*/
+
+
+CREATE TABLE \"Playlist\" (
+\t\"PlaylistId\" INTEGER NOT NULL, 
+\t\"Name\" NVARCHAR(120), 
+\tPRIMARY KEY (\"PlaylistId\")
+)
+
+/*
+3 rows from Playlist table:
+PlaylistId\tName
+1\tMusic
+2\tMovies
+3\tTV Shows
+*/
+
+
+CREATE TABLE \"PlaylistTrack\" (
+\t\"PlaylistId\" INTEGER NOT NULL, 
+\t\"TrackId\" INTEGER NOT NULL, 
+\tPRIMARY KEY (\"PlaylistId\", \"TrackId\"), 
+\tFOREIGN KEY(\"TrackId\") REFERENCES \"Track\" (\"TrackId\"), 
+\tFOREIGN KEY(\"PlaylistId\") REFERENCES \"Playlist\" (\"PlaylistId\")
+)
+
+/*
+3 rows from PlaylistTrack table:
+PlaylistId\tTrackId
+1\t3402
+1\t3389
+1\t3390
+*/
+
+
+CREATE TABLE \"Track\" (
+\t\"TrackId\" INTEGER NOT NULL, 
+\t\"Name\" NVARCHAR(200) NOT NULL, 
+\t\"AlbumId\" INTEGER, 
+\t\"MediaTypeId\" INTEGER NOT NULL, 
+\t\"GenreId\" INTEGER, 
+\t\"Composer\" NVARCHAR(220), 
+\t\"Milliseconds\" INTEGER NOT NULL, 
+\t\"Bytes\" INTEGER, 
+\t\"UnitPrice\" NUMERIC(10, 2) NOT NULL, 
+\tPRIMARY KEY (\"TrackId\"), 
+\tFOREIGN KEY(\"MediaTypeId\") REFERENCES \"MediaType\" (\"MediaTypeId\"), 
+\tFOREIGN KEY(\"GenreId\") REFERENCES \"Genre\" (\"GenreId\"), 
+\tFOREIGN KEY(\"AlbumId\") REFERENCES \"Album\" (\"AlbumId\")
+)
+
+/*
+3 rows from Track table:
+TrackId\tName\tAlbumId\tMediaTypeId\tGenreId\tComposer\tMilliseconds\tBytes\tUnitPrice
+1\tFor Those About To Rock (We Salute You)\t1\t1\t1\tAngus Young, Malcolm Young, Brian Johnson\t343719\t11170334\t0.99
+2\tBalls to the Wall\t2\t2\t1\tNone\t342562\t5510424\t0.99
+3\tFast As a Shark\t3\t2\t1\tF. Baltes, S. Kaufman, U. Dirkscneider & W. Hoffman\t230619\t3990994\t0.99
+*/
+
+Question: How many employees are there
+SQLQuery:"
